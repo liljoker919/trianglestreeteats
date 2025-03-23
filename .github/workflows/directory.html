@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Truck Directory – Triangle Street Eats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles/main.css">
+</head>
+
+<body>
+    <header>
+        <h1 style="text-align: center; font-family: 'Bebas Neue', sans-serif;">Food Truck Directory</h1>
+    </header>
+
+    <main class="directory">
+        <section class="filters">
+            <select name="city" id="city-filter">
+                <option value="">Filter by City</option>
+                <option value="Raleigh">Raleigh</option>
+                <option value="Durham">Durham</option>
+                <option value="Cary">Cary</option>
+            </select>
+            <select name="cuisine" id="cuisine-filter">
+                <option value="">Filter by Cuisine</option>
+                <option value="Tacos">Tacos</option>
+                <option value="BBQ">BBQ</option>
+                <option value="Asian">Asian</option>
+                <option value="Vegan">Vegan</option>
+            </select>
+        </section>
+
+        <section class="truck-grid">
+            <!-- Sample Food Truck Card -->
+            <div class="truck-card">
+                <img src="assets/images/sample-truck.jpg" alt="Sample Food Truck">
+                <div class="truck-card-content">
+                    <h3>Tasty Tacos</h3>
+                    <p>Cuisine: Tacos</p>
+                    <p>City: Raleigh</p>
+                    <div class="truck-links">
+                        <a href="#">Website</a>
+                        <a href="#">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <!-- More cards will go here -->
+        </section>
+    </main>
+</body>
+
+</html>
