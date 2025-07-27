@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+
+# Environment
+.env
+.env.*
+venv/
+ENV/
+env/
+*.env
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Migrations
+*/migrations/*.pyc
+*/migrations/__pycache__/
+*/migrations/*.py
+
+# Media and static files
+/media/
+staticfiles/
+static/
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.nox/
+.cache/
+coverage.xml
+
+# Test output
+nosetests.xml
+test_*.xml
+junit-*.xml
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# mypy
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# Pytest
+.pytest_cache/
+
+# Build
+build/
+dist/
+*.egg-info/
+.eggs/
+MANIFEST
+
+# IDEs
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Local settings
+local_settings.py
+settings_local.py
