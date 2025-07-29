@@ -1,0 +1,23 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block title %}Food Trucks in {{ city|title }} - Triangle Street Eats{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Food Trucks in {{ city|title }}</h1>
+    <p>Explore the best food trucks in {{ city|title }}.</p>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Coming Soon!</h4>
+                <p>We're working hard to bring you the most comprehensive list of food trucks in {{ city|title }}. Check back soon for updates!</p>
+                <hr>
+                <a href="{% url 'directory' %}" class="btn btn-primary">Browse All Trucks</a>
+                <a href="{% url 'submit_truck' %}" class="btn btn-outline-primary ms-2">Submit a Truck</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

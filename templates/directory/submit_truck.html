@@ -1,0 +1,44 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block title %}Submit Your Food Truck - Triangle Street Eats{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Submit Your Food Truck</h1>
+    <p>Join the Triangle food scene! Add your truck to our growing directory.</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Submission Form Coming Soon!</h4>
+                <p>We're building a comprehensive submission form for food truck owners. This will include fields for:</p>
+                <ul>
+                    <li>Truck name and description</li>
+                    <li>Cuisine type and menu highlights</li>
+                    <li>Operating locations and schedule</li>
+                    <li>Contact information and social media</li>
+                    <li>Photos and branding</li>
+                </ul>
+                <hr>
+                <p class="mb-0">In the meantime, feel free to browse our existing directory!</p>
+                <a href="{% url 'directory' %}" class="btn btn-primary mt-2">Browse Food Trucks</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Why Join Us?</h5>
+                    <p class="card-text">Get your food truck discovered by hungry customers across the Triangle area.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="text-success">✓</i> Increased visibility</li>
+                        <li><i class="text-success">✓</i> Local customer base</li>
+                        <li><i class="text-success">✓</i> Easy management</li>
+                        <li><i class="text-success">✓</i> Free listing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
