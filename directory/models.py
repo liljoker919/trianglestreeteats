@@ -113,3 +113,52 @@ class WebsiteUserProfile(models.Model):
     
     def __str__(self):
         return f"Profile for {self.user.username}"
+
+
+class FoodTruck(models.Model):
+    """
+    Model to store information about each food truck, including its name, 
+    location, cuisine, contact details, and an image.
+    """
+    name = models.CharField(
+        max_length=100,
+        help_text='Name of the food truck'
+    )
+    
+    city = models.CharField(
+        max_length=50,
+        help_text='City where the food truck operates'
+    )
+    
+    cuisine = models.CharField(
+        max_length=50,
+        help_text='Type of cuisine served'
+    )
+    
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text='Description of the food truck and its offerings'
+    )
+    
+    website = models.URLField(
+        blank=True,
+        null=True,
+        help_text='Food truck website URL'
+    )
+    
+    social_links = models.JSONField(
+        blank=True,
+        null=True,
+        help_text='Social media links (Facebook, Instagram, Twitter, etc.)'
+    )
+    
+    image = models.ImageField(
+        upload_to='food_trucks/',
+        blank=True,
+        null=True,
+        help_text='Food truck image'
+    )
+    
+    def __str__(self):
+        return self.name
