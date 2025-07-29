@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from .models import CustomUser, FoodTruckOwnerProfile, WebsiteUserProfile
+from .models import CustomUser, FoodTruckOwnerProfile, WebsiteUserProfile, FoodTruck
 
 # Create your tests here.
 
@@ -167,3 +167,144 @@ class UserModelIntegrationTest(TestCase):
         # Test wrong password
         wrong_auth = authenticate(username='authtest', password='wrongpass')
         self.assertIsNone(wrong_auth)
+
+
+class FoodTruckModelTest(TestCase):
+    """
+    Test cases for the FoodTruck model.
+    """
+    
+    def test_create_food_truck_required_fields_only(self):
+        """Test creating a food truck with only required fields."""
+        truck = FoodTruck.objects.create(
+            name='Taco Paradise',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        self.assertEqual(truck.name, 'Taco Paradise')
+        self.assertEqual(truck.city, 'Raleigh')
+        self.assertEqual(truck.cuisine, 'Mexican')
+        self.assertEqual(str(truck), 'Taco Paradise')
+        
+        # Test optional fields are None/empty
+        self.assertIsNone(truck.description)
+        self.assertIsNone(truck.website)
+        self.assertIsNone(truck.social_links)
+        self.assertFalse(truck.image)  # ImageField is falsy when empty
+    
+    def test_create_food_truck_all_fields(self):
+        """Test creating a food truck with all fields populated."""
+        social_links_data = {
+            'facebook': 'https://facebook.com/tacoparadise',
+            'instagram': 'https://instagram.com/tacoparadise',
+            'twitter': 'https://twitter.com/tacoparadise'
+        }
+        
+        truck = FoodTruck.objects.create(
+            name='Gourmet Burgers',
+            city='Durham',
+            cuisine='American',
+            description='The best gourmet burgers in the Triangle area',
+            website='https://gourmetburgers.com',
+            social_links=social_links_data
+        )
+        
+        self.assertEqual(truck.name, 'Gourmet Burgers')
+        self.assertEqual(truck.city, 'Durham')
+        self.assertEqual(truck.cuisine, 'American')
+        self.assertEqual(truck.description, 'The best gourmet burgers in the Triangle area')
+        self.assertEqual(truck.website, 'https://gourmetburgers.com')
+        self.assertEqual(truck.social_links, social_links_data)
+        self.assertEqual(str(truck), 'Gourmet Burgers')
+    
+    def test_food_truck_name_max_length(self):
+        """Test that name field respects max_length."""
+        # Test name at max length (100 characters)
+        long_name = 'A' * 100
+        truck = FoodTruck.objects.create(
+            name=long_name,
+            city='Chapel Hill',
+            cuisine='Italian'
+        )
+        self.assertEqual(truck.name, long_name)
+        self.assertEqual(len(truck.name), 100)
+    
+    def test_food_truck_city_max_length(self):
+        """Test that city field respects max_length."""
+        # Test city at max length (50 characters)
+        long_city = 'B' * 50
+        truck = FoodTruck.objects.create(
+            name='Pizza Palace',
+            city=long_city,
+            cuisine='Italian'
+        )
+        self.assertEqual(truck.city, long_city)
+        self.assertEqual(len(truck.city), 50)
+    
+    def test_food_truck_cuisine_max_length(self):
+        """Test that cuisine field respects max_length."""
+        # Test cuisine at max length (50 characters)
+        long_cuisine = 'C' * 50
+        truck = FoodTruck.objects.create(
+            name='Fusion Food',
+            city='Cary',
+            cuisine=long_cuisine
+        )
+        self.assertEqual(truck.cuisine, long_cuisine)
+        self.assertEqual(len(truck.cuisine), 50)
+    
+    def test_food_truck_json_field_structure(self):
+        """Test that social_links JSONField can store structured data."""
+        social_data = {
+            'facebook': 'https://facebook.com/test',
+            'instagram': 'https://instagram.com/test',
+            'twitter': 'https://twitter.com/test',
+            'website': 'https://test.com'
+        }
+        
+        truck = FoodTruck.objects.create(
+            name='Test Truck',
+            city='Test City',
+            cuisine='Test Cuisine',
+            social_links=social_data
+        )
+        
+        # Retrieve from database to ensure it's properly stored/retrieved
+        retrieved_truck = FoodTruck.objects.get(id=truck.id)
+        self.assertEqual(retrieved_truck.social_links, social_data)
+        self.assertEqual(retrieved_truck.social_links['facebook'], 'https://facebook.com/test')
+    
+    def test_food_truck_optional_fields_can_be_empty(self):
+        """Test that optional fields can be explicitly set to empty values."""
+        truck = FoodTruck.objects.create(
+            name='Minimal Truck',
+            city='Minimal City',
+            cuisine='Minimal Cuisine',
+            description='',
+            website='',
+            social_links={}
+        )
+        
+        self.assertEqual(truck.description, '')
+        self.assertEqual(truck.website, '')
+        self.assertEqual(truck.social_links, {})
+        
+    def test_multiple_food_trucks(self):
+        """Test creating multiple food trucks to ensure no conflicts."""
+        truck1 = FoodTruck.objects.create(
+            name='Truck One',
+            city='City One',
+            cuisine='Cuisine One'
+        )
+        
+        truck2 = FoodTruck.objects.create(
+            name='Truck Two',
+            city='City Two',
+            cuisine='Cuisine Two'
+        )
+        
+        trucks = FoodTruck.objects.all()
+        self.assertEqual(trucks.count(), 2)
+        self.assertIn(truck1, trucks)
+        self.assertIn(truck2, trucks)
