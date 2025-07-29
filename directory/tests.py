@@ -174,9 +174,19 @@ class FoodTruckModelTest(TestCase):
     Test cases for the FoodTruck model.
     """
     
+    def setUp(self):
+        """Set up test data."""
+        self.owner = User.objects.create_user(
+            username='truckowner',
+            email='owner@truck.com',
+            password='truckpass123',
+            role='food_truck_owner'
+        )
+    
     def test_create_food_truck_required_fields_only(self):
         """Test creating a food truck with only required fields."""
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name='Taco Paradise',
             city='Raleigh',
             cuisine='Mexican'
@@ -202,6 +212,7 @@ class FoodTruckModelTest(TestCase):
         }
         
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name='Gourmet Burgers',
             city='Durham',
             cuisine='American',
@@ -223,6 +234,7 @@ class FoodTruckModelTest(TestCase):
         # Test name at max length (100 characters)
         long_name = 'A' * 100
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name=long_name,
             city='Chapel Hill',
             cuisine='Italian'
@@ -235,6 +247,7 @@ class FoodTruckModelTest(TestCase):
         # Test city at max length (50 characters)
         long_city = 'B' * 50
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name='Pizza Palace',
             city=long_city,
             cuisine='Italian'
@@ -247,6 +260,7 @@ class FoodTruckModelTest(TestCase):
         # Test cuisine at max length (50 characters)
         long_cuisine = 'C' * 50
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name='Fusion Food',
             city='Cary',
             cuisine=long_cuisine
@@ -264,6 +278,7 @@ class FoodTruckModelTest(TestCase):
         }
         
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name='Test Truck',
             city='Test City',
             cuisine='Test Cuisine',
@@ -278,6 +293,7 @@ class FoodTruckModelTest(TestCase):
     def test_food_truck_optional_fields_can_be_empty(self):
         """Test that optional fields can be explicitly set to empty values."""
         truck = FoodTruck.objects.create(
+            owner=self.owner,
             name='Minimal Truck',
             city='Minimal City',
             cuisine='Minimal Cuisine',
@@ -293,12 +309,14 @@ class FoodTruckModelTest(TestCase):
     def test_multiple_food_trucks(self):
         """Test creating multiple food trucks to ensure no conflicts."""
         truck1 = FoodTruck.objects.create(
+            owner=self.owner,
             name='Truck One',
             city='City One',
             cuisine='Cuisine One'
         )
         
         truck2 = FoodTruck.objects.create(
+            owner=self.owner,
             name='Truck Two',
             city='City Two',
             cuisine='Cuisine Two'
@@ -308,3 +326,225 @@ class FoodTruckModelTest(TestCase):
         self.assertEqual(trucks.count(), 2)
         self.assertIn(truck1, trucks)
         self.assertIn(truck2, trucks)
+
+
+class FoodTruckOwnerRelationshipTest(TestCase):
+    """
+    Test cases for the FoodTruck-Owner relationship functionality.
+    """
+    
+    def setUp(self):
+        """Set up test data."""
+        # Create food truck owners
+        self.owner1 = User.objects.create_user(
+            username='owner1',
+            email='owner1@truck.com',
+            password='owner1pass',
+            role='food_truck_owner'
+        )
+        
+        self.owner2 = User.objects.create_user(
+            username='owner2',
+            email='owner2@truck.com',
+            password='owner2pass',
+            role='food_truck_owner'
+        )
+        
+        # Create a non-food-truck user
+        self.regular_user = User.objects.create_user(
+            username='regularuser',
+            email='user@example.com',
+            password='userpass',
+            role='website_user'
+        )
+    
+    def test_food_truck_owner_relationship(self):
+        """Test the basic owner relationship."""
+        truck = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Owner 1 Truck',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        # Test the relationship
+        self.assertEqual(truck.owner, self.owner1)
+        self.assertEqual(truck.owner.username, 'owner1')
+        self.assertEqual(truck.owner.role, 'food_truck_owner')
+    
+    def test_owner_can_have_multiple_food_trucks(self):
+        """Test that one owner can have multiple food trucks."""
+        truck1 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Truck 1',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        truck2 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Truck 2',
+            city='Durham',
+            cuisine='Italian'
+        )
+        
+        # Test the reverse relationship
+        owner_trucks = self.owner1.food_trucks.all()
+        self.assertEqual(owner_trucks.count(), 2)
+        self.assertIn(truck1, owner_trucks)
+        self.assertIn(truck2, owner_trucks)
+    
+    def test_different_owners_have_separate_trucks(self):
+        """Test that different owners have separate food trucks."""
+        truck1 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Owner 1 Truck',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        truck2 = FoodTruck.objects.create(
+            owner=self.owner2,
+            name='Owner 2 Truck',
+            city='Durham',
+            cuisine='Italian'
+        )
+        
+        # Test owner 1's trucks
+        owner1_trucks = self.owner1.food_trucks.all()
+        self.assertEqual(owner1_trucks.count(), 1)
+        self.assertIn(truck1, owner1_trucks)
+        self.assertNotIn(truck2, owner1_trucks)
+        
+        # Test owner 2's trucks
+        owner2_trucks = self.owner2.food_trucks.all()
+        self.assertEqual(owner2_trucks.count(), 1)
+        self.assertIn(truck2, owner2_trucks)
+        self.assertNotIn(truck1, owner2_trucks)
+    
+    def test_query_food_trucks_by_owner(self):
+        """Test querying food trucks owned by a specific user."""
+        # Create trucks for different owners
+        truck1 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Truck A',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        truck2 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Truck B',
+            city='Durham',
+            cuisine='Italian'
+        )
+        
+        truck3 = FoodTruck.objects.create(
+            owner=self.owner2,
+            name='Truck C',
+            city='Chapel Hill',
+            cuisine='Asian'
+        )
+        
+        # Query food trucks by owner
+        owner1_trucks = FoodTruck.objects.filter(owner=self.owner1)
+        owner2_trucks = FoodTruck.objects.filter(owner=self.owner2)
+        
+        # Test owner1's trucks
+        self.assertEqual(owner1_trucks.count(), 2)
+        self.assertIn(truck1, owner1_trucks)
+        self.assertIn(truck2, owner1_trucks)
+        self.assertNotIn(truck3, owner1_trucks)
+        
+        # Test owner2's trucks
+        self.assertEqual(owner2_trucks.count(), 1)
+        self.assertIn(truck3, owner2_trucks)
+        self.assertNotIn(truck1, owner2_trucks)
+        self.assertNotIn(truck2, owner2_trucks)
+    
+    def test_query_owner_of_food_truck(self):
+        """Test finding the owner of a specific food truck."""
+        truck = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Test Truck',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        # Query the owner through the truck
+        retrieved_truck = FoodTruck.objects.get(name='Test Truck')
+        truck_owner = retrieved_truck.owner
+        
+        self.assertEqual(truck_owner, self.owner1)
+        self.assertEqual(truck_owner.username, 'owner1')
+        self.assertEqual(truck_owner.role, 'food_truck_owner')
+    
+    def test_cascade_delete_behavior(self):
+        """Test that when an owner is deleted, their food trucks are also deleted."""
+        truck = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Test Truck',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        # Verify the truck exists
+        self.assertTrue(FoodTruck.objects.filter(name='Test Truck').exists())
+        
+        # Delete the owner
+        self.owner1.delete()
+        
+        # Verify the truck is also deleted due to CASCADE
+        self.assertFalse(FoodTruck.objects.filter(name='Test Truck').exists())
+    
+    def test_non_food_truck_owner_as_owner(self):
+        """Test that non-food-truck users can technically be assigned as owners."""
+        # Note: The model doesn't enforce role validation at the database level,
+        # but the help text indicates it should be a food_truck_owner
+        truck = FoodTruck.objects.create(
+            owner=self.regular_user,
+            name='Regular User Truck',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        self.assertEqual(truck.owner, self.regular_user)
+        self.assertEqual(truck.owner.role, 'website_user')
+        
+        # This demonstrates that while the model allows it,
+        # application logic should validate the role
+    
+    def test_related_name_functionality(self):
+        """Test the related_name='food_trucks' functionality."""
+        truck1 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='First Truck',
+            city='Raleigh',
+            cuisine='Mexican'
+        )
+        
+        truck2 = FoodTruck.objects.create(
+            owner=self.owner1,
+            name='Second Truck',
+            city='Durham',
+            cuisine='Italian'
+        )
+        
+        # Use the related_name to access trucks from the owner
+        trucks = self.owner1.food_trucks.all()
+        self.assertEqual(trucks.count(), 2)
+        
+        # Test ordering and filtering through the related manager
+        mexican_trucks = self.owner1.food_trucks.filter(cuisine='Mexican')
+        self.assertEqual(mexican_trucks.count(), 1)
+        self.assertEqual(mexican_trucks.first(), truck1)
+        
+        # Test creating through the related manager
+        truck3 = self.owner1.food_trucks.create(
+            name='Third Truck',
+            city='Cary',
+            cuisine='Asian'
+        )
+        
+        self.assertEqual(self.owner1.food_trucks.count(), 3)
+        self.assertEqual(truck3.owner, self.owner1)

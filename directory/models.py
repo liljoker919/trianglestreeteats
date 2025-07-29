@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 # Create your models here.
 
@@ -120,6 +121,13 @@ class FoodTruck(models.Model):
     Model to store information about each food truck, including its name, 
     location, cuisine, contact details, and an image.
     """
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='food_trucks',
+        help_text='Food truck owner (must be a user with food_truck_owner role)'
+    )
+    
     name = models.CharField(
         max_length=100,
         help_text='Name of the food truck'
