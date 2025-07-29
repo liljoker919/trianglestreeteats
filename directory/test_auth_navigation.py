@@ -56,7 +56,7 @@ class AuthenticationNavigationTest(TestCase):
         """Test that register URL resolves correctly."""
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'This is a placeholder registration page')
+        self.assertContains(response, 'Create Website User Account')
 
     def test_profile_url_resolves(self):
         """Test that profile URL resolves correctly."""
