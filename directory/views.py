@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import logout
-from django.shortcuts import redirect
+from django.contrib.auth import logout, login
+from django.contrib import messages
+from .forms import WebsiteUserCreationForm
 
 
 def home(request):
@@ -28,8 +29,21 @@ def logout_view(request):
     return redirect('home')
 
 def register_view(request):
-    """Placeholder register view"""
-    return render(request, 'registration/register.html')
+    """Website user registration view"""
+    if request.method == 'POST':
+        form = WebsiteUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}! You can now log in.')
+            
+            # Automatically log in the user after registration
+            login(request, user)
+            return redirect('profile')  # Redirect to profile page after successful registration
+    else:
+        form = WebsiteUserCreationForm()
+    
+    return render(request, 'registration/register_website_user.html', {'form': form})
 
 def profile_view(request):
     """Placeholder profile view"""
