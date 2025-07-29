@@ -1,0 +1,20 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Login - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Login</h3>
+            </div>
+            <div class="card-body">
+                <p>This is a placeholder login page.</p>
+                <p>Login functionality will be implemented here.</p>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

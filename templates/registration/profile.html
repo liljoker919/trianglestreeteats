@@ -1,0 +1,29 @@
+{% extends 'global/base.html' %}
+
+{% block title %}Profile - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>User Profile</h3>
+            </div>
+            <div class="card-body">
+                {% if user.is_authenticated %}
+                    <p>Welcome, {{ user.username }}!</p>
+                    <p>This is a placeholder profile page.</p>
+                    <p>User profile management functionality will be implemented here.</p>
+                    <hr>
+                    <p><strong>Email:</strong> {{ user.email|default:"Not provided" }}</p>
+                    <p><strong>Role:</strong> {{ user.get_role_display }}</p>
+                {% else %}
+                    <p>You must be logged in to view your profile.</p>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                {% endif %}
+                <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
