@@ -1,0 +1,67 @@
+{% extends "global/base.html" %}
+{% load static %}
+
+{% block title %}Triangle Food Trucks - Discover Local Eats{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row align-items-center my-5">
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold">Discover Food Trucks in Raleigh-Durham</h1>
+            <p class="lead">Find your favorite eats by city or cuisine — or submit your own truck!</p>
+            <a href="{% url 'browse_trucks' %}" class="btn btn-primary btn-lg mt-3">Browse Trucks</a>
+            <a href="{% url 'submit_truck' %}" class="btn btn-outline-secondary btn-lg mt-3 ms-2">Submit a Truck</a>
+        </div>
+        <div class="col-lg-6 text-center">
+            <img src="" alt="Food Truck" class="img-fluid">
+        </div>
+    </div>
+
+    <!-- Explore by Category -->
+    <div class="row text-center my-5">
+        <h2 class="mb-4">Explore by Category</h2>
+        <div class="col-md-4 mb-4">
+            <img src="" alt="Raleigh" class="mb-2" width="60">
+            <h5>Raleigh</h5>
+            <a href="" class="btn btn-sm btn-outline-primary mt-2">View Trucks</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <img src="{% static 'images/durham-icon.jpg' %}" alt="Durham" class="mb-2" width="60">
+            <h5>Durham</h5>
+            <a href="{% url 'trucks_by_city' city='durham' %}" class="btn btn-sm btn-outline-primary mt-2">View Trucks</a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <img src="{% static 'images/carrboro-icon.jpg' %}" alt="Carrboro" class="mb-2" width="60">
+            <h5>Carrboro</h5>
+            <a href="{% url 'trucks_by_city' city='carrboro' %}" class="btn btn-sm btn-outline-primary mt-2">View Trucks</a>
+        </div>
+    </div>
+
+    <!-- Featured Cuisines -->
+    <div class="row text-center my-5">
+        <h2 class="mb-4">Top Cuisines</h2>
+        <div class="col-md-3 col-6 mb-3">
+            <span class="badge bg-primary py-2 px-3">Mexican</span>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <span class="badge bg-success py-2 px-3">BBQ</span>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <span class="badge bg-warning text-dark py-2 px-3">Asian Fusion</span>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <span class="badge bg-danger py-2 px-3">Vegan</span>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="row my-5">
+        <div class="col text-center">
+            <h3>Own a food truck?</h3>
+            <p>Join the Triangle food scene! Add your truck to our growing list.</p>
+            <a href="{% url 'submit_truck' %}" class="btn btn-lg btn-success">Submit Your Listing</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
