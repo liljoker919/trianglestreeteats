@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.contrib.auth import logout
-from django.shortcuts import redirect
+from django.contrib.auth import logout, login
+from django.contrib import messages
+from .forms import FoodTruckOwnerRegistrationForm
 
 
 def home(request):
@@ -34,3 +35,18 @@ def register_view(request):
 def profile_view(request):
     """Placeholder profile view"""
     return render(request, 'registration/profile.html')
+
+def register_food_truck_owner(request):
+    """Registration view for food truck owners"""
+    if request.method == 'POST':
+        form = FoodTruckOwnerRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Log the user in after successful registration
+            login(request, user)
+            messages.success(request, 'Registration successful! Welcome to Triangle Street Eats.')
+            return redirect('profile')
+    else:
+        form = FoodTruckOwnerRegistrationForm()
+    
+    return render(request, 'registration/register_food_truck_owner.html', {'form': form})
