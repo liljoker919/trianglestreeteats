@@ -50,7 +50,9 @@ class AuthenticationNavigationTest(TestCase):
         """Test that login URL resolves correctly."""
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'This is a placeholder login page')
+        self.assertContains(response, 'Login')  # Page title/header
+        self.assertContains(response, 'Username')  # Form field
+        self.assertContains(response, 'Password')  # Form field
 
     def test_register_url_resolves(self):
         """Test that register URL resolves correctly."""
